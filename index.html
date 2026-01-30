@@ -3,282 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智慧人社 - Web端设计规范</title>
+    <title>智慧人社 - Web端设计规范 (标准版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #1677ff;
-            --text-main: #262626;
-            --text-secondary: #595959;
-            --bg-light: #f5f7fa;
-            --border-color: #f0f0f0;
+            --primary: #1677ff;
+            --title: rgba(0, 0, 0, 0.85);
+            --main-text: rgba(0, 0, 0, 0.65);
+            --secondary-text: rgba(0, 0, 0, 0.45);
+            --border: #f0f0f0;
+            --bg-light: #fafafa;
+            /* 核心布局参数 */
+            --sidebar-width: 206px;
+            --column-width: 63px;
+            --gutter-width: 8px;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
-            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            color: var(--main-text);
+            line-height: 1.6;
             background: #fff;
         }
-        .sidebar-item-active {
+        .sidebar-active {
             background-color: #e6f4ff;
-            color: var(--primary-color);
-            border-right: 3px solid var(--primary-color);
+            color: var(--primary);
+            border-right: 3px solid var(--primary);
+            font-weight: 600;
         }
-        .code-block {
-            background: #fafafa;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            padding: 1rem;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-        .demo-card {
-            border: 1px solid var(--border-color);
+        .section-card { border-bottom: 1px solid var(--border); padding-bottom: 5rem; margin-bottom: 4rem; }
+        h3 { font-size: 1.5rem; font-weight: 600; color: var(--title); margin: 2.5rem 0 1.25rem; }
+        .param-badge { font-family: 'Consolas', monospace; background: var(--bg-light); color: #c41d7f; padding: 2px 6px; border-radius: 4px; font-size: 13px; border: 1px solid #f0f0f0; }
+        
+        /* 栅格参考图样式 */
+        .grid-reference-img {
+            width: 100%;
+            border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 24px;
-            margin: 16px 0;
+            margin: 20px 0;
+            background: #f9f9f9;
         }
-        scroll-behavior: smooth;
+
+        /* 间距演示 */
+        .spacing-item { background: #ffe7ba; border: 1px solid #ffbb96; display: inline-block; vertical-align: middle; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <!-- Sidebar -->
-    <aside class="w-64 border-right border-gray-200 bg-white flex-shrink-0 flex flex-col border-r h-full overflow-y-auto">
+    <!-- 侧边导航 -->
+    <aside class="w-[206px] border-r flex-shrink-0 flex flex-col h-full overflow-y-auto bg-white">
         <div class="p-6 border-b">
-            <h1 class="text-xl font-bold text-blue-600 flex items-center">
-                <i class="fas fa-layer-group mr-2"></i>智慧人社 UI
-            </h1>
-            <p class="text-xs text-gray-400 mt-1">v1.0.0 企业标准规范</p>
+            <div class="flex items-center gap-2 text-blue-600 font-bold text-lg">
+                <div class="w-6 h-6 bg-blue-600 rounded flex items-center justify-center text-white text-[10px]">ZH</div>
+                智慧人社 UI
+            </div>
         </div>
-        <nav class="flex-1 py-4">
-            <div class="px-6 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">开始</div>
-            <a href="#principles" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">设计原则</a>
-            
-            <div class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">全局样式</div>
-            <a href="#layout" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">布局 & 栅格</a>
-            <a href="#typography" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">字体规范</a>
-            <a href="#colors" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">色彩体系</a>
-            
-            <div class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">通用组件</div>
-            <a href="#buttons" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">按钮 Button</a>
-            <a href="#navigation" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">导航 Navigation</a>
-            
-            <div class="px-6 py-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">业务场景</div>
-            <a href="#forms" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">数据录入 Forms</a>
-            <a href="#tables" class="block px-6 py-3 text-sm hover:bg-gray-50 transition-colors">数据展示 Tables</a>
+        <nav class="p-4 space-y-1">
+            <a href="#scope" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">1. 范围</a>
+            <a href="#principles" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">2. 设计原则</a>
+            <a href="#layout" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">3. 布局与栅格</a>
+            <a href="#spacing" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">4. 间距系统</a>
+            <a href="#alignment" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">5. 对齐方式</a>
+            <a href="#contrast" class="nav-item block px-4 py-2 text-sm rounded hover:bg-gray-50">6. 对比与重复</a>
         </nav>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-y-auto bg-white p-12 relative">
-        <div class="max-w-4xl mx-auto">
+    <!-- 主内容区 -->
+    <main class="flex-1 overflow-y-auto">
+        <div class="max-w-5xl mx-auto px-12 py-16">
             
-            <!-- Intro Section -->
-            <section id="principles" class="mb-16">
-                <h2 class="text-3xl font-bold mb-6">设计原则</h2>
-                <p class="text-gray-600 mb-8 leading-relaxed">此规范适用于智慧人社部门内部平台，旨在通过建立统一的UI规范，缩减开发成本，提升B端产品整体风格的一致性。</p>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="p-4 bg-blue-50 rounded-lg">
-                        <h4 class="font-bold text-blue-700 mb-2">效率优先</h4>
-                        <p class="text-sm text-gray-600">减少操作步骤，高频功能一键触达，支持键盘快捷操作。</p>
+            <!-- 1. 范围 -->
+            <section id="scope" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">1. 范围</h2>
+                <div class="bg-gray-50 p-6 rounded-lg border">
+                    <p class="text-gray-700 leading-relaxed">
+                        此设计规范适用于软件股份智慧人社部门内部平台与系统的设计和开发工作，旨在通过建立 UI 规范，缩减项目设计和开发的时间成本，降低用户在不同系统间的适应难度，确定人社 B 端产品的整体风格。本规范通用于一般项目的开发，也可根据不同项目的需求和特点进行灵活变通。
+                    </p>
+                </div>
+            </section>
+
+            <!-- 2. 设计原则 -->
+            <section id="principles" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">2. 设计原则</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="p-6 border rounded-lg hover:shadow-md transition-shadow">
+                        <h4 class="font-bold text-blue-600 mb-2">1. 效率优先</h4>
+                        <p class="text-xs text-gray-500">减少操作步骤，高频功能一键触达；支持键盘快捷操作（如批量处理）。</p>
                     </div>
-                    <div class="p-4 bg-green-50 rounded-lg">
-                        <h4 class="font-bold text-green-700 mb-2">一致性</h4>
-                        <p class="text-sm text-gray-600">跨模块组件、交互逻辑、文案描述需保持高度统一。</p>
+                    <div class="p-6 border rounded-lg hover:shadow-md transition-shadow">
+                        <h4 class="font-bold text-blue-600 mb-2">2. 一致性</h4>
+                        <p class="text-xs text-gray-500">跨模块组件样式、交互逻辑统一，确保用户在系统各处认知一致。</p>
                     </div>
-                    <div class="p-4 bg-purple-50 rounded-lg">
-                        <h4 class="font-bold text-purple-700 mb-2">容错性</h4>
-                        <p class="text-sm text-gray-600">关键操作二次确认，实时保存草稿，操作历史可追溯。</p>
+                    <div class="p-6 border rounded-lg hover:shadow-md transition-shadow">
+                        <h4 class="font-bold text-blue-600 mb-2">3. 可扩展性</h4>
+                        <p class="text-xs text-gray-500">预留业务扩展接口；适配多角色权限视图及复杂业务逻辑的动态增删。</p>
+                    </div>
+                    <div class="p-6 border rounded-lg hover:shadow-md transition-shadow">
+                        <h4 class="font-bold text-blue-600 mb-2">4. 容错性</h4>
+                        <p class="text-xs text-gray-500">关键操作二次确认；实时保存草稿，提供操作历史追溯及撤回机制。</p>
+                    </div>
+                    <div class="p-6 border rounded-lg hover:shadow-md transition-shadow">
+                        <h4 class="font-bold text-blue-600 mb-2">5. 操作流畅性</h4>
+                        <p class="text-xs text-gray-500">保持用户操作连贯性，不允许产生过多交互层级和冗余特效，确保系统响应灵敏。</p>
                     </div>
                 </div>
             </section>
 
-            <hr class="my-12">
+            <!-- 3. 布局与栅格 -->
+            <section id="layout" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">3. 布局与栅格 (Grid System)</h2>
+                
+                <div class="mb-8">
+                    <h3 class="!mt-0">栅格规范图示</h3>
+                    <p class="text-sm text-gray-500 mb-4">左侧导航宽 <span class="param-badge">206px</span>，右侧内容区采用 <span class="param-badge">24 栅格</span>，列宽 <span class="param-badge">63px</span>，水槽 <span class="param-badge">8px</span>。</p>
+                    
+                    <!-- 核心修改：直接贴图占位 -->
+                    <div class="grid-reference-img">
+                        <div class="p-12 text-center text-gray-400">
+                            <!-- 如果你有图片 URL，请替换下面的 src -->
+                            <img src="" alt="栅格系统参考图" class="mx-auto max-w-full h-auto shadow-sm rounded">
+                            <p class="mt-4 text-xs italic">此处已按照规范（206px + 24栅格）预留图片位置，请插入设计稿图片</p>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Layout Section -->
-            <section id="layout" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">布局 & 栅格</h2>
-                <div class="mb-6">
-                    <h3 class="text-lg font-semibold mb-4 italic text-gray-700 border-l-4 border-blue-500 pl-3">响应式规范</h3>
-                    <p class="text-sm text-gray-600 mb-4">主要适配分辨率：1920 / 1440 / 1366 / 1280。</p>
-                    <div class="demo-card bg-gray-50 border-dashed border-2 flex flex-col gap-2">
-                        <div class="flex gap-2">
-                            <div class="h-8 bg-blue-200 flex-1 rounded text-xs flex items-center justify-center text-blue-700">8单元</div>
-                            <div class="h-8 bg-blue-200 flex-1 rounded text-xs flex items-center justify-center text-blue-700">8单元</div>
-                            <div class="h-8 bg-blue-200 flex-1 rounded text-xs flex items-center justify-center text-blue-700">8单元</div>
-                        </div>
-                        <div class="flex gap-2">
-                            <div class="h-8 bg-blue-100 flex-1 rounded text-xs flex items-center justify-center text-blue-500 italic">24 栅格系统 - 水槽(Gutter)建议 16px / 24px</div>
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="p-6 bg-blue-50 rounded-lg">
+                        <h4 class="font-bold mb-4">布局参数详情</h4>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex justify-between"><span>左侧导航栏 (Sidebar)</span><span class="font-mono font-bold">206 px</span></li>
+                            <li class="flex justify-between"><span>内容区栅格数 (Columns)</span><span class="font-mono font-bold">24</span></li>
+                            <li class="flex justify-between"><span>单列宽度 (Col Width)</span><span class="font-mono font-bold">63 px</span></li>
+                            <li class="flex justify-between"><span>水槽宽度 (Gutter)</span><span class="font-mono font-bold">8 px</span></li>
+                        </ul>
+                    </div>
+                    <div class="p-6 bg-gray-50 rounded-lg text-sm text-gray-500 italic">
+                        <p>注：在 1920px 分辨率下，右侧内容区最大宽度计算如下：<br>
+                        (63 * 24) + (8 * 23) = 1512px + 184px = 1696px。<br>
+                        剩余空间作为 Margin 左右留白。</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Typography Section -->
-            <section id="typography" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">字体规范</h2>
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-50 border-b">
-                            <th class="py-3 px-4 font-semibold text-sm">层级</th>
-                            <th class="py-3 px-4 font-semibold text-sm">字号/行高</th>
-                            <th class="py-3 px-4 font-semibold text-sm">示例</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="border-b">
-                            <td class="py-4 px-4 text-sm">主标题 (H1)</td>
-                            <td class="py-4 px-4 text-sm text-gray-500">18px / 26px</td>
-                            <td class="py-4 px-4 text-lg font-bold">智慧人社业务系统</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="py-4 px-4 text-sm">正文内容</td>
-                            <td class="py-4 px-4 text-sm text-gray-500">14px / 22px</td>
-                            <td class="py-4 px-4 text-sm">这是用于系统内大量文本展示的标准字号。</td>
-                        </tr>
-                        <tr class="border-b">
-                            <td class="py-4 px-4 text-sm">辅助说明</td>
-                            <td class="py-4 px-4 text-sm text-gray-500">12px / 20px</td>
-                            <td class="py-4 px-4 text-xs text-gray-400">用于表单提示、时间戳等弱信息。</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- 4. 间距系统 -->
+            <section id="spacing" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">4. 间距 (Spacing)</h2>
+                <p class="text-sm text-gray-600 mb-8">遵循 8px 倍数原则。统一的间距步进能让页面产生有节奏的呼吸感。</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4"><div class="spacing-item w-2 h-2"></div><span class="text-xs font-mono">8px (XS) - 极小间距，用于图标与文字</span></div>
+                    <div class="flex items-center gap-4"><div class="spacing-item w-4 h-4"></div><span class="text-xs font-mono">16px (S) - 标准间距，用于表单项、列表行</span></div>
+                    <div class="flex items-center gap-4"><div class="spacing-item w-6 h-6"></div><span class="text-xs font-mono">24px (M) - 内部区块间距，用于卡片内间距</span></div>
+                    <div class="flex items-center gap-4"><div class="spacing-item w-8 h-8"></div><span class="text-xs font-mono">32px (L) - 大间距，用于主内容区分割</span></div>
+                </div>
             </section>
 
-            <!-- Colors Section -->
-            <section id="colors" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">色彩体系</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="rounded-lg overflow-hidden shadow-sm border">
-                        <div class="h-20 bg-blue-600"></div>
-                        <div class="p-3 bg-white">
-                            <p class="text-xs font-bold">Primary Blue</p>
-                            <p class="text-xs text-gray-400">#1677FF (品牌主色)</p>
+            <!-- 5. 对齐方式 -->
+            <section id="alignment" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">5. 对齐方式 (Alignment)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-bold mb-4">左对齐 (统一参考线)</h4>
+                        <div class="p-4 border rounded bg-white">
+                            <div class="h-3 w-1/2 bg-gray-200 mb-2"></div>
+                            <div class="h-3 w-full bg-gray-100 mb-2"></div>
+                            <div class="h-3 w-3/4 bg-gray-100"></div>
                         </div>
+                        <p class="text-xs text-gray-400 mt-2">用于标题、文本段落。视线起点一致，阅读效率最高。</p>
                     </div>
-                    <div class="rounded-lg overflow-hidden shadow-sm border">
-                        <div class="h-20 bg-green-500"></div>
-                        <div class="p-3 bg-white">
-                            <p class="text-xs font-bold">Success Green</p>
-                            <p class="text-xs text-gray-400">#52C41A</p>
+                    <div>
+                        <h4 class="font-bold mb-4">右对齐 (数值与标签)</h4>
+                        <div class="p-4 border rounded bg-white space-y-2">
+                            <div class="flex justify-end gap-2"><span class="text-[10px]">申报金额：</span><div class="h-4 w-20 bg-gray-100"></div></div>
+                            <div class="flex justify-end gap-2"><span class="text-[10px]">参保单位代码：</span><div class="h-4 w-20 bg-gray-100"></div></div>
                         </div>
-                    </div>
-                    <div class="rounded-lg overflow-hidden shadow-sm border">
-                        <div class="h-20 bg-orange-500"></div>
-                        <div class="p-3 bg-white">
-                            <p class="text-xs font-bold">Warning Orange</p>
-                            <p class="text-xs text-gray-400">#FAAD14</p>
-                        </div>
-                    </div>
-                    <div class="rounded-lg overflow-hidden shadow-sm border">
-                        <div class="h-20 bg-red-500"></div>
-                        <div class="p-3 bg-white">
-                            <p class="text-xs font-bold">Error Red</p>
-                            <p class="text-xs text-gray-400">#FF4D4F</p>
-                        </div>
+                        <p class="text-xs text-gray-400 mt-2">用于表单标签及表格中的数字，方便大小比对和视觉关联。</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Buttons Section -->
-            <section id="buttons" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">按钮 Button</h2>
-                <p class="text-sm text-gray-600 mb-4">按钮用于触发即时操作。尺寸规范：默认高度 32px，大 40px，小 24px。</p>
-                <div class="demo-card flex flex-wrap gap-4 items-center">
-                    <button class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm hover:bg-blue-700 transition shadow-sm">主要按钮</button>
-                    <button class="border border-gray-300 px-4 py-1.5 rounded text-sm hover:border-blue-500 hover:text-blue-500 transition">次要按钮</button>
-                    <button class="border border-gray-300 border-dashed px-4 py-1.5 rounded text-sm hover:text-blue-500">虚线按钮</button>
-                    <button class="text-red-500 hover:bg-red-50 px-3 py-1.5 rounded text-sm">危险操作</button>
-                    <button class="text-blue-500 text-sm">链接按钮</button>
-                </div>
-                <div class="code-block">
-                    &lt;button class="btn-primary"&gt;主要按钮&lt;/button&gt; <br>
-                    /* 最小宽度: 74px; 高度: 32px; 边角: 4px; */
-                </div>
-            </section>
-
-            <!-- Forms Section -->
-            <section id="forms" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">数据录入 Forms</h2>
-                <div class="demo-card max-w-lg">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            <span class="text-red-500 mr-1">*</span> 参保人姓名
-                        </label>
-                        <input type="text" placeholder="请输入姓名" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500">
+            <!-- 6. 对比与重复 -->
+            <section id="contrast" class="section-card">
+                <h2 class="text-3xl font-bold text-gray-900 mb-6">6. 对比与重复 (Contrast & Repetition)</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h4 class="font-bold mb-4">主次关系对比</h4>
+                        <div class="flex gap-4 p-6 bg-gray-50 border rounded">
+                            <button class="px-6 py-2 bg-blue-600 text-white rounded text-sm font-bold">保存并提交</button>
+                            <button class="px-6 py-2 border border-gray-300 bg-white text-gray-600 rounded text-sm">暂存草稿</button>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">所属险种</label>
-                        <select class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 bg-white">
-                            <option>基本养老保险</option>
-                            <option>失业保险</option>
-                            <option>工伤保险</option>
-                        </select>
-                    </div>
-                    <div class="flex items-center gap-4 mb-4">
-                        <label class="flex items-center text-sm cursor-pointer">
-                            <input type="checkbox" class="mr-2 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                            已阅读并同意
-                        </label>
-                    </div>
-                    <div class="flex justify-end gap-2">
-                        <button class="border px-4 py-1.5 rounded text-sm">取消</button>
-                        <button class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm">提交申请</button>
-                    </div>
-                </div>
-            </section>
-
-             <!-- Table Section -->
-             <section id="tables" class="mb-16">
-                <h2 class="text-2xl font-bold mb-6">数据展示 Tables</h2>
-                <div class="demo-card p-0 overflow-hidden border">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="bg-gray-50 border-b">
-                            <tr>
-                                <th class="py-3 px-4 font-semibold text-sm w-12 text-center">#</th>
-                                <th class="py-3 px-4 font-semibold text-sm">业务流水号</th>
-                                <th class="py-3 px-4 font-semibold text-sm">处理人</th>
-                                <th class="py-3 px-4 font-semibold text-sm">状态</th>
-                                <th class="py-3 px-4 font-semibold text-sm">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b hover:bg-blue-50 transition-colors">
-                                <td class="py-3 px-4 text-sm text-center">1</td>
-                                <td class="py-3 px-4 text-sm">SN-20231024001</td>
-                                <td class="py-3 px-4 text-sm italic">张三 (审核员)</td>
-                                <td class="py-3 px-4 text-sm">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">● 审核通过</span>
-                                </td>
-                                <td class="py-3 px-4 text-sm flex gap-3">
-                                    <a href="#" class="text-blue-600 hover:underline">详情</a>
-                                    <a href="#" class="text-red-500 hover:underline">退回</a>
-                                </td>
-                            </tr>
-                            <tr class="border-b hover:bg-blue-50 transition-colors">
-                                <td class="py-3 px-4 text-sm text-center">2</td>
-                                <td class="py-3 px-4 text-sm">SN-20231024002</td>
-                                <td class="py-3 px-4 text-sm italic">李四</td>
-                                <td class="py-3 px-4 text-sm">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">● 处理中</span>
-                                </td>
-                                <td class="py-3 px-4 text-sm flex gap-3">
-                                    <a href="#" class="text-blue-600 hover:underline">详情</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
-                    <p>共 1,248 条数据</p>
-                    <div class="flex gap-2">
-                        <button class="px-2 py-1 border rounded hover:border-blue-500"> <i class="fas fa-chevron-left"></i> </button>
-                        <button class="px-2 py-1 border rounded bg-blue-600 text-white">1</button>
-                        <button class="px-2 py-1 border rounded hover:border-blue-500">2</button>
-                        <button class="px-2 py-1 border rounded hover:border-blue-500">3</button>
-                        <button class="px-2 py-1 border rounded hover:border-blue-500"> <i class="fas fa-chevron-right"></i> </button>
+                    <div>
+                        <h4 class="font-bold mb-4">视觉元素重复</h4>
+                        <p class="text-sm text-gray-500 mb-4">在整个系统中使用统一的圆角、阴影和图标风格，构建品牌识别度。</p>
+                        <div class="flex gap-4">
+                            <div class="w-24 h-24 border rounded-lg bg-white shadow-sm flex items-center justify-center text-blue-500"><i class="fas fa-file-invoice fa-2x"></i></div>
+                            <div class="w-24 h-24 border rounded-lg bg-white shadow-sm flex items-center justify-center text-blue-500"><i class="fas fa-user-shield fa-2x"></i></div>
+                            <div class="w-24 h-24 border rounded-lg bg-white shadow-sm flex items-center justify-center text-blue-500"><i class="fas fa-chart-line fa-2x"></i></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -286,31 +208,27 @@
         </div>
     </main>
 
-    <!-- Right-side Anchor Map (Fixed) -->
-    <nav class="w-48 hidden xl:flex flex-col pt-12 pr-6 flex-shrink-0 text-xs text-gray-400">
-        <div class="border-l border-gray-100 flex flex-col gap-3">
-            <span class="pl-4 font-bold text-gray-900 mb-2">本页目录</span>
-            <a href="#principles" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">设计原则</a>
-            <a href="#layout" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">布局 & 栅格</a>
-            <a href="#typography" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">字体规范</a>
-            <a href="#colors" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">色彩体系</a>
-            <a href="#buttons" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">按钮</a>
-            <a href="#forms" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">数据录入</a>
-            <a href="#tables" class="pl-4 hover:text-blue-500 transition border-l-2 border-transparent hover:border-blue-500">数据展示</a>
-        </div>
-    </nav>
-
     <script>
-        // Simple logic for smooth navigation and active states
-        document.querySelectorAll('aside nav a').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                document.querySelectorAll('aside nav a').forEach(a => a.classList.remove('sidebar-item-active'));
-                this.classList.add('sidebar-item-active');
-            });
-        });
+        // 导航激活逻辑
+        const navItems = document.querySelectorAll('.nav-item');
+        const sections = document.querySelectorAll('section');
 
-        // Initialize first item
-        document.querySelector('aside nav a').classList.add('sidebar-item-active');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (window.scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('sidebar-active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('sidebar-active');
+                }
+            });
+        }, { passive: true });
     </script>
 </body>
 </html>
