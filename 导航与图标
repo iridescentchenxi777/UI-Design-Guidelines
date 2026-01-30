@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧人社 - UI 设计规范体系 (V20.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1677ff;
+            --primary-bg: #e6f4ff;
+            --text-main: #1f2937;
+            --text-sec: #6b7280;
+            --border: #f0f0f0;
+            --header-h: 64px;
+            --sidebar-w: 240px;
+            /* 严格圆角逻辑 */
+            --r-2: 2px;
+            --r-4: 4px;
+            --r-8: 8px;
+        }
+
+        body { font-family: "PingFang SC", system-ui; color: var(--text-main); background: #f8fafc; margin: 0; }
+
+        /* 1. 顶部导航 (Fixed) */
+        .g-header { 
+            height: var(--header-h); 
+            background: #fff; 
+            border-bottom: 1px solid var(--border); 
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            display: flex; align-items: center; padding: 0 24px; justify-content: space-between;
+        }
+
+        /* 2. 侧边导航 (Fixed) */
+        .g-sidebar { 
+            width: var(--sidebar-w); 
+            background: #fff; 
+            border-right: 1px solid var(--border); 
+            position: fixed; top: var(--header-h); bottom: 0; left: 0; z-index: 900;
+            padding: 24px 12px; overflow-y: auto;
+        }
+
+        /* 主容器 */
+        .g-main { 
+            margin-top: var(--header-h); 
+            margin-left: var(--sidebar-w); 
+            padding: 40px; 
+            min-height: calc(100vh - var(--header-h));
+        }
+
+        /* 模块样式 */
+        .spec-card { background: #fff; border-radius: var(--r-8); border: 1px solid var(--border); padding: 32px; margin-bottom: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+        .spec-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; color: #000; }
+        .spec-title::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+
+        /* 图标画板 1024x1024 */
+        .icon-canvas { 
+            position: relative; 
+            width: 400px; height: 400px; /* UI显示等比缩放 */
+            background: #fff; border: 1px solid #d1d5db; 
+            margin: 0 auto;
+            background-image: linear-gradient(#f3f4f6 1px, transparent 1px), linear-gradient(90deg, #f3f4f6 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .bleed-area {
+            position: absolute;
+            top: 25px; left: 25px; right: 25px; bottom: 25px; /* 64px 对应到 400px 下的比例约 25px */
+            border: 1px dashed #ff4d4f;
+            pointer-events: none;
+        }
+        .bleed-label {
+            position: absolute;
+            color: #ff4d4f; font-size: 10px; font-weight: bold;
+        }
+
+        /* 走马灯演示 */
+        .carousel-demo { width: 100%; height: 120px; background: #001529; border-radius: var(--r-8); position: relative; display: flex; align-items: center; justify-content: center; color: #fff; }
+        .carousel-dots { position: absolute; bottom: 10px; display: flex; gap: 6px; }
+        .dot { width: 12px; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; }
+        .dot.active { background: #fff; }
+
+        /* 步骤条 */
+        .step-node { display: flex; flex-direction: column; align-items: center; position: relative; flex: 1; }
+        .step-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--primary); background: #fff; z-index: 2; font-size: 12px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .step-line { position: absolute; height: 2px; background: #e5e7eb; width: 100%; top: 12px; left: 50%; z-index: 1; }
+
+        .nav-active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+        .radius-box { width: 60px; height: 60px; background: var(--primary); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 顶部导航 (Top Header) -->
+    <header class="g-header">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white"><i class="fas fa-shield-alt"></i></div>
+            <span class="font-black text-lg tracking-tight">智慧人社 UI Design</span>
+        </div>
+        <nav class="flex gap-8 text-sm font-medium">
+            <a href="#" class="text-blue-600 border-b-2 border-blue-600 h-[64px] flex items-center">规范首页</a>
+            <a href="#" class="text-gray-500 hover:text-blue-600 h-[64px] flex items-center">组件库</a>
+            <a href="#" class="text-gray-500 hover:text-blue-600 h-[64px] flex items-center">资源下载</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <i class="fas fa-search text-gray-400"></i>
+            <div class="w-8 h-8 rounded-full bg-gray-200"></div>
+        </div>
+    </header>
+
+    <!-- 2. 侧边导航 (Global Sidebar) -->
+    <aside class="g-sidebar">
+        <div class="space-y-1">
+            <div class="px-4 py-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">Navigation</div>
+            <a href="#section-nav" class="flex items-center gap-3 px-4 py-3 rounded-lg nav-active text-sm">
+                <i class="fas fa-compass w-4"></i> 导航模块 (9项)
+            </a>
+            <a href="#section-radius" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">
+                <i class="fas fa-square w-4"></i> 边角模块 (3类)
+            </a>
+            <a href="#section-icon" class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-50 text-sm">
+                <i class="fas fa-icons w-4"></i> 图标深度规范
+            </a>
+        </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="g-main">
+        
+        <!-- 导航模块 -->
+        <section id="section-nav" class="spec-card">
+            <h2 class="spec-title">导航形式全覆盖 (Navigation System)</h2>
+            <div class="grid grid-cols-2 gap-10">
+                <!-- 树形与走马灯 -->
+                <div class="space-y-8">
+                    <div class="p-4 border border-dashed rounded-lg">
+                        <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">3. 树形导航 Tree</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center gap-2"><i class="fas fa-chevron-down text-gray-300"></i> <i class="fas fa-university text-blue-500"></i> 市人社局</div>
+                            <div class="ml-6 flex items-center gap-2 text-blue-600 font-bold"><i class="fas fa-file-alt"></i> 基金监管处</div>
+                            <div class="ml-6 flex items-center gap-2 text-gray-500"><i class="fas fa-file-alt"></i> 养老保险处</div>
+                        </div>
+                    </div>
+                    <div class="p-4 border border-dashed rounded-lg">
+                        <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">7. 走马灯 Carousel</p>
+                        <div class="carousel-demo">
+                            <span class="text-xs font-bold">重要：全省社保系统停机维护通知</span>
+                            <div class="carousel-dots">
+                                <div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 复合导航 -->
+                <div class="space-y-8">
+                    <div class="p-4 border border-dashed rounded-lg">
+                        <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">8. 面包屑 Breadcrumb</p>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span class="text-gray-400">首页</span> <span class="text-gray-300">/</span>
+                            <span class="text-gray-400">业务申办</span> <span class="text-gray-300">/</span>
+                            <span class="font-bold">养老金计算</span>
+                        </div>
+                    </div>
+                    <div class="p-4 border border-dashed rounded-lg">
+                        <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">5. Tab页 & 6. 分页器</p>
+                        <div class="flex border-b mb-4">
+                            <div class="px-4 py-2 border-b-2 border-blue-600 text-blue-600 text-xs font-bold">全部事项</div>
+                            <div class="px-4 py-2 text-gray-400 text-xs hover:text-gray-600 cursor-pointer">我的办件</div>
+                        </div>
+                        <div class="flex gap-1 justify-end">
+                            <div class="w-6 h-6 border rounded flex items-center justify-center text-[10px] bg-blue-600 text-white">1</div>
+                            <div class="w-6 h-6 border rounded flex items-center justify-center text-[10px]">2</div>
+                            <div class="w-6 h-6 border rounded flex items-center justify-center text-[10px]"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+                    <div class="p-4 border border-dashed rounded-lg">
+                        <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">9. 步骤条 Steps</p>
+                        <div class="flex w-full">
+                            <div class="step-node"><div class="step-circle">1</div><span class="text-[10px] mt-1 font-bold">填报</span><div class="step-line bg-blue-600"></div></div>
+                            <div class="step-node"><div class="step-circle border-blue-600 text-blue-600">2</div><span class="text-[10px] mt-1 font-bold text-blue-600">预审</span><div class="step-line"></div></div>
+                            <div class="step-node"><div class="step-circle border-gray-200 text-gray-300">3</div><span class="text-[10px] mt-1 text-gray-300 font-bold">完成</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 pt-8 border-t grid grid-cols-2 gap-10">
+                <div class="p-4 border border-dashed rounded-lg">
+                    <p class="text-[11px] font-bold text-gray-400 mb-4 tracking-widest uppercase">4. 锚点导航 Anchor</p>
+                    <div class="flex flex-col gap-2 border-l-2 border-gray-100 pl-4">
+                        <div class="text-blue-600 font-bold text-xs border-l-2 border-blue-600 -ml-[18px] pl-4">单位信息</div>
+                        <div class="text-gray-400 text-xs">经办人信息</div>
+                        <div class="text-gray-400 text-xs">附件上传</div>
+                    </div>
+                </div>
+                <div class="p-4 border border-dashed rounded-lg bg-gray-50 flex items-center justify-center italic text-gray-400 text-xs">
+                    顶部导航与侧边导航已集成在系统框架中。
+                </div>
+            </div>
+        </section>
+
+        <!-- 边角模块 -->
+        <section id="section-radius" class="spec-card">
+            <h2 class="spec-title">边角模块规范 (Corner Radius)</h2>
+            <div class="grid grid-cols-3 gap-8">
+                <div class="flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-xl">
+                    <div class="radius-box rounded-[2px] shadow-lg shadow-blue-100">2px</div>
+                    <div class="text-center">
+                        <span class="block font-bold text-sm">微圆角 (SM)</span>
+                        <span class="text-[10px] text-gray-400">Checkbox, Tag, Small Input</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-xl">
+                    <div class="radius-box rounded-[4px] shadow-lg shadow-blue-100">4px</div>
+                    <div class="text-center">
+                        <span class="block font-bold text-sm">标准圆角 (MD)</span>
+                        <span class="text-[10px] text-gray-400">Button, Default Input, Tooltip</span>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-4 p-6 bg-gray-50 rounded-xl">
+                    <div class="radius-box rounded-[8px] shadow-lg shadow-blue-100">8px</div>
+                    <div class="text-center">
+                        <span class="block font-bold text-sm">容器圆角 (LG)</span>
+                        <span class="text-[10px] text-gray-400">Card, Modal, Popover, Drawer</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 图标模块 -->
+        <section id="section-icon" class="spec-card">
+            <h2 class="spec-title">图标深度规范 (Iconography)</h2>
+            <div class="grid grid-cols-2 gap-10">
+                <!-- 左：设计原则与规格 -->
+                <div class="space-y-8">
+                    <div class="bg-gray-50 p-8 rounded-xl h-full">
+                        <h4 class="text-sm font-bold mb-6">设计原则 & 规格</h4>
+                        <ul class="text-[12px] space-y-4 text-gray-500 leading-relaxed">
+                            <li><b class="text-gray-900">视觉重心：</b>所有图标需在光学感官上保持视觉中心对齐而非几何对齐。</li>
+                            <li><b class="text-gray-900">像素对齐：</b>核心路径需落在整数像素位，防止 1px 虚化。</li>
+                            <li><b class="text-gray-900">线宽规格：</b>标准线宽统一为 64px (基于 1024 画板)。</li>
+                            <li><b class="text-gray-900">图标圆角：</b>外圆角建议 64px，内圆角建议 32px。</li>
+                            <li><b class="text-gray-900">封闭路径：</b>所有线性图标应尽量保持路径闭合，避免断线引起的视觉不连贯。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 右：画板演示 -->
+                <div class="flex flex-col items-center">
+                    <div class="icon-canvas">
+                        <!-- 出血位 64px (缩放比例下) -->
+                        <div class="bleed-area"></div>
+                        <span class="bleed-label" style="top: 5px; left: 26px;">Bleed: 64px</span>
+                        
+                        <!-- 画板轴线 -->
+                        <div class="absolute top-1/2 left-0 w-full h-[1px] bg-red-100"></div>
+                        <div class="absolute left-1/2 top-0 h-full w-[1px] bg-red-100"></div>
+
+                        <!-- 示例图标 -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-40 h-40 border-[12px] border-gray-800 rounded-[25px]"></div>
+                        </div>
+
+                        <span class="absolute bottom-[-25px] left-0 text-[10px] font-mono text-gray-400">1024 x 1024 PX CANVAS</span>
+                    </div>
+                    <div class="mt-12 flex gap-8">
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="w-10 h-10 border-2 border-gray-900 rounded-[2px]"></div>
+                            <span class="text-[10px] font-bold">2px Eq</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="w-10 h-10 border-2 border-gray-900 rounded-[6px]"></div>
+                            <span class="text-[10px] font-bold">4px Eq</span>
+                        </div>
+                        <div class="flex flex-col items-center gap-2">
+                            <div class="w-10 h-10 border-2 border-gray-900 rounded-[12px]"></div>
+                            <span class="text-[10px] font-bold">8px Eq</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="h-20"></div>
+    </main>
+
+</body>
+</html>
