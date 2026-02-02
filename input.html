@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧人社 - UI 设计规范体系 (V27.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1677ff;
+            --primary-bg: #e6f4ff;
+            --primary-hover: #4096ff;
+            --error: #ff4d4f;
+            --error-bg: #fff2f0;
+            --text-main: #1f2937;
+            --text-sec: #6b7280;
+            --text-dis: #bfbfbf;
+            --border: #f0f0f0;
+            --header-h: 64px;
+            --sidebar-w: 240px;
+            --r-4: 4px;
+            --r-8: 8px;
+        }
+
+        body { font-family: "PingFang SC", system-ui; color: var(--text-main); background: #f8fafc; margin: 0; scroll-behavior: smooth; }
+
+        /* 布局框架 */
+        .g-header { height: var(--header-h); background: #fff; border-bottom: 1px solid var(--border); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
+        .g-sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border); position: fixed; top: var(--header-h); bottom: 0; left: 0; z-index: 900; padding: 24px 12px; overflow-y: auto; }
+        .g-main { margin-top: var(--header-h); margin-left: var(--sidebar-w); padding: 40px; min-height: calc(100vh - var(--header-h)); }
+
+        /* 模块卡片 */
+        .spec-card { background: #fff; border-radius: var(--r-8); border: 1px solid var(--border); padding: 32px; margin-bottom: 40px; }
+        .spec-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; color: #000; }
+        .spec-title::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+
+        /* 通用录入样式 */
+        .u-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #374151; }
+        .u-input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: var(--r-4); font-size: 14px; transition: all 0.2s; outline: none; background: #fff; }
+        .u-input:hover { border-color: var(--primary); }
+        .u-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-bg); }
+        
+        /* 交互状态特化 */
+        .u-input.error { border-color: var(--error); }
+        .u-input.error:focus { box-shadow: 0 0 0 2px var(--error-bg); }
+        .u-input.disabled { background: #f5f5f5; cursor: not-allowed; color: var(--text-dis); border-color: #d9d9d9; }
+        
+        .status-tag { font-size: 10px; color: var(--text-sec); font-family: monospace; text-transform: uppercase; margin-bottom: 12px; display: block; letter-spacing: 0.5px; border-left: 2px solid #ddd; padding-left: 6px; }
+
+        /* 穿梭框 */
+        .transfer-list { width: 100%; height: 200px; border: 1px solid #d1d5db; border-radius: var(--r-4); display: flex; flex-direction: column; background: #fff; }
+        .transfer-header { padding: 8px 12px; background: #f9fafb; border-bottom: 1px solid #f0f0f0; font-size: 12px; font-weight: bold; }
+        .transfer-item { padding: 6px 12px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .transfer-item:hover { background: #f5f5f5; }
+        .transfer-item.active { background: var(--primary-bg); color: var(--primary); }
+
+        /* 面板预览 */
+        .panel-preview { background: #fff; border: 1px solid #f0f0f0; border-radius: var(--r-8); box-shadow: 0 6px 16px rgba(0,0,0,0.08); overflow: hidden; }
+        .date-cell { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 12px; border-radius: var(--r-2); cursor: pointer; }
+        .date-cell.active { background: var(--primary); color: #fff; }
+        
+        .cascader-menu { min-width: 120px; border-right: 1px solid #f0f0f0; padding: 4px 0; max-height: 200px; overflow-y: auto; }
+        .cascader-item { padding: 8px 12px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .cascader-item:hover, .cascader-item.active { background: var(--primary-bg); color: var(--primary); }
+
+        /* 上传样式 */
+        .upload-dragger { border: 2px dashed #d1d5db; border-radius: var(--r-8); padding: 32px; text-align: center; cursor: pointer; transition: 0.2s; background: #fafafa; }
+        .upload-dragger:hover { border-color: var(--primary); background: var(--primary-bg); }
+        .thumb-box { width: 80px; height: 80px; border: 1px solid #d9d9d9; border-radius: var(--r-4); position: relative; overflow: hidden; }
+
+        /* 评分 */
+        .rate-star { font-size: 20px; color: #fadb14; cursor: pointer; }
+        .rate-star.inactive { color: #f0f0f0; }
+
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: var(--r-8); color: var(--text-sec); font-size: 14px; }
+        .nav-link.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <header class="g-header">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white"><i class="fas fa-edit"></i></div>
+            <span class="font-black text-lg tracking-tight">智慧人社 UI Design</span>
+        </div>
+        <nav class="flex gap-8 text-sm font-medium">
+            <a href="#" class="text-blue-600 border-b-2 border-blue-600 h-[64px] flex items-center">全量录入组件库</a>
+            <a href="#" class="text-gray-500 h-[64px] flex items-center">交互逻辑</a>
+        </nav>
+        <div class="w-8 h-8 rounded-full bg-gray-200"></div>
+    </header>
+
+    <aside class="g-sidebar">
+        <div class="space-y-1">
+            <div class="px-4 py-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">录入分类</div>
+            <a href="#section-text" class="nav-link active"><i class="fas fa-i-cursor"></i> 文本录入</a>
+            <a href="#section-select" class="nav-link"><i class="fas fa-list-ul"></i> 选择录入</a>
+            <a href="#section-upload" class="nav-link"><i class="fas fa-cloud-upload-alt"></i> 文件上传</a>
+            <a href="#section-rate" class="nav-link"><i class="fas fa-star"></i> 评分系统</a>
+        </div>
+    </aside>
+
+    <main class="g-main">
+        
+        <!-- 1. 文本录入模块 -->
+        <section id="section-text" class="spec-card">
+            <h2 class="spec-title">文本录入状态 (Text Input States)</h2>
+            <div class="grid grid-cols-2 gap-16">
+                <!-- 基础状态列 -->
+                <div>
+                    <span class="status-tag">基础交互状态 / Basic States</span>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="u-label">普通状态 (Normal)</label>
+                            <input type="text" class="u-input" placeholder="请输入内容">
+                        </div>
+                        <div>
+                            <label class="u-label">聚焦状态 (Focus)</label>
+                            <input type="text" class="u-input border-[#1677ff] shadow-[0_0_0_2px_#e6f4ff]" value="正在输入中...">
+                        </div>
+                        <div>
+                            <label class="u-label">错误状态 (Error/Warning)</label>
+                            <input type="text" class="u-input error" value="错误的输入内容">
+                            <p class="text-[11px] text-[#ff4d4f] mt-1"><i class="fas fa-exclamation-circle"></i> 格式不正确，请重新输入</p>
+                        </div>
+                        <div>
+                            <label class="u-label">禁用状态 (Disabled)</label>
+                            <input type="text" class="u-input disabled" value="只读或不可编辑信息" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 复合形态列 -->
+                <div>
+                    <span class="status-tag">复合形态 / Composite Forms</span>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="u-label">带前/后缀标签 (Addon)</label>
+                            <div class="flex">
+                                <span class="bg-gray-50 border border-r-0 border-gray-300 px-3 flex items-center text-xs text-gray-500 rounded-l-md">https://</span>
+                                <input type="text" class="u-input rounded-none" placeholder="mysite">
+                                <span class="bg-gray-50 border border-l-0 border-gray-300 px-3 flex items-center text-xs text-gray-500 rounded-r-md">.com</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="u-label">带图标嵌入 (Affix)</label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-3.5 text-gray-300 text-xs"></i>
+                                <input type="text" class="u-input pl-9" placeholder="用户名">
+                                <i class="fas fa-info-circle absolute right-3 top-3.5 text-gray-300 hover:text-blue-500 cursor-help text-xs"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="u-label">文本域与字数统计 (Textarea)</label>
+                            <div class="relative">
+                                <textarea class="u-input h-24 resize-none" placeholder="请输入备注内容..."></textarea>
+                                <div class="absolute bottom-2 right-3 text-[10px] text-gray-400 bg-white/80 px-1">12 / 100</div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="u-label">禁用文本域</label>
+                            <textarea class="u-input h-20 resize-none disabled" disabled>此备注信息已锁定，不可修改。</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 选择录入模块 -->
+        <section id="section-select" class="spec-card">
+            <h2 class="spec-title">选择录入 (Selection & Pickers)</h2>
+            <div class="grid grid-cols-3 gap-10">
+                <!-- 第一列：基础选择 -->
+                <div class="space-y-8">
+                    <div>
+                        <span class="status-tag">单/复选 & 开关</span>
+                        <div class="space-y-4 pt-2">
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="radio" checked class="accent-blue-600"> 选项 A</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="radio" class="accent-blue-600"> 选项 B</label>
+                            </div>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" checked class="rounded accent-blue-600"> 已阅</label>
+                                <label class="flex items-center gap-2 text-sm cursor-pointer"><input type="checkbox" class="rounded accent-blue-600"> 置顶</label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-4 bg-blue-600 rounded-full flex items-center px-0.5"><div class="w-3 h-3 bg-white rounded-full ml-auto"></div></div>
+                                <span class="text-xs">开启状态</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-tag">搜索框 / Search</span>
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
+                            <input type="text" class="u-input pl-9" placeholder="搜索经办机构...">
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-tag">滑块选择 / Slider (已修复对齐)</span>
+                        <div class="pt-6 pb-2">
+                            <div class="relative h-1 bg-gray-100 rounded-full">
+                                <!-- 进度条：垂直居中 -->
+                                <div class="absolute h-full bg-blue-600 w-1/2 rounded-full top-0"></div>
+                                <!-- 滑块按钮：使用 translate-y 确保绝对居中 -->
+                                <div class="absolute w-4 h-4 bg-white border-2 border-blue-600 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-sm cursor-pointer hover:scale-110 transition-transform"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二列：面板类选择 -->
+                <div class="space-y-8 col-span-2">
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <span class="status-tag">日期选择面板 / Date Panel</span>
+                            <div class="panel-preview p-3 w-64">
+                                <div class="flex justify-between items-center mb-3 text-xs font-bold border-b pb-2">
+                                    <i class="fas fa-chevron-left"></i> 2024年 5月 <i class="fas fa-chevron-right"></i>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 text-center text-[10px]">
+                                    <div class="text-gray-400">一</div><div class="text-gray-400">二</div><div class="text-gray-400">三</div><div class="text-gray-400">四</div><div class="text-gray-400">五</div><div class="text-gray-400">六</div><div class="text-gray-400">日</div>
+                                    <div class="date-cell text-gray-300">29</div><div class="date-cell text-gray-300">30</div>
+                                    <div class="date-cell">1</div><div class="date-cell">2</div><div class="date-cell">3</div><div class="date-cell">4</div><div class="date-cell">5</div>
+                                    <div class="date-cell">12</div><div class="date-cell">13</div><div class="date-cell">14</div><div class="date-cell active">15</div><div class="date-cell">16</div><div class="date-cell">17</div><div class="date-cell">18</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="status-tag">级联选择面板 / Cascader</span>
+                            <div class="panel-preview flex h-40">
+                                <div class="cascader-menu">
+                                    <div class="cascader-item active">浙江省 <i class="fas fa-chevron-right text-[8px]"></i></div>
+                                    <div class="cascader-item">江苏省 <i class="fas fa-chevron-right text-[8px]"></i></div>
+                                    <div class="cascader-item">上海市 <i class="fas fa-chevron-right text-[8px]"></i></div>
+                                </div>
+                                <div class="cascader-menu bg-gray-50">
+                                    <div class="cascader-item active">杭州市 <i class="fas fa-chevron-right text-[8px]"></i></div>
+                                    <div class="cascader-item">宁波市 <i class="fas fa-chevron-right text-[8px]"></i></div>
+                                </div>
+                                <div class="cascader-menu">
+                                    <div class="cascader-item">西湖区</div>
+                                    <div class="cascader-item">上城区</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第三行：穿梭框 -->
+                <div class="col-span-3">
+                    <span class="status-tag">穿梭框 / Transfer</span>
+                    <div class="flex items-center gap-4">
+                        <div class="transfer-list flex-1">
+                            <div class="transfer-header">待选项 (20)</div>
+                            <div class="transfer-body overflow-y-auto">
+                                <div class="transfer-item active"><input type="checkbox" checked> 业务权限 A</div>
+                                <div class="transfer-item"><input type="checkbox"> 业务权限 B</div>
+                                <div class="transfer-item"><input type="checkbox"> 业务权限 C</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <button class="w-8 h-8 border rounded flex items-center justify-center text-gray-300"><i class="fas fa-chevron-right"></i></button>
+                            <button class="w-8 h-8 border rounded flex items-center justify-center text-blue-600 bg-white shadow-sm"><i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="transfer-list flex-1">
+                            <div class="transfer-header">已选项 (1)</div>
+                            <div class="transfer-body">
+                                <div class="transfer-item">系统管理员权限</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 文件上传模块 -->
+        <section id="section-upload" class="spec-card">
+            <h2 class="spec-title">文件上传 (Upload)</h2>
+            <div class="grid grid-cols-2 gap-12">
+                <div>
+                    <span class="status-tag">基础点击/拖拽上传</span>
+                    <div class="upload-dragger">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-blue-500 mb-3"></i>
+                        <p class="text-sm font-bold">点击或拖拽文件到此区域</p>
+                        <p class="text-[11px] text-gray-400 mt-1">支持 PDF, JPG, DOCX (最大 20MB)</p>
+                    </div>
+                </div>
+                <div>
+                    <span class="status-tag">缩略图上传模式</span>
+                    <div class="flex gap-4">
+                        <div class="thumb-box flex flex-col items-center justify-center border-dashed bg-gray-50 cursor-pointer hover:border-blue-500">
+                            <i class="fas fa-plus text-gray-400 mb-1"></i>
+                            <span class="text-[10px] text-gray-400">上传材料</span>
+                        </div>
+                        <div class="thumb-box">
+                            <img src="https://via.placeholder.com/80" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                <i class="fas fa-trash-alt text-white text-xs cursor-pointer"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 评分系统 -->
+        <section id="section-rate" class="spec-card">
+            <h2 class="spec-title">评分系统 (Rate System)</h2>
+            <div class="grid grid-cols-2 gap-12">
+                <div class="space-y-6">
+                    <div>
+                        <span class="status-tag">不同尺寸 / Sizes</span>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-gray-400 w-12">大 (24px)</span>
+                                <div class="flex gap-2 text-2xl"><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star inactive"></i></div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-[10px] text-gray-400 w-12">小 (12px)</span>
+                                <div class="flex gap-1 text-xs"><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star inactive"></i><i class="fas fa-star rate-star inactive"></i><i class="fas fa-star rate-star inactive"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <span class="status-tag">特殊状态 / Special States</span>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="text-[10px] mb-2 font-bold text-gray-500">半星支持</p>
+                                <div class="flex"><i class="fas fa-star rate-star"></i><i class="fas fa-star-half-alt rate-star"></i><i class="fas fa-star rate-star inactive"></i></div>
+                            </div>
+                            <div class="p-3 bg-gray-50 rounded">
+                                <p class="text-[10px] mb-2 font-bold text-gray-500">带文案反馈</p>
+                                <div class="flex items-center gap-2">
+                                    <div class="flex text-sm"><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i><i class="fas fa-star rate-star"></i></div>
+                                    <span class="text-[10px] text-amber-600 font-bold">一般</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="h-20"></div>
+    </main>
+
+</body>
+</html>
