@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧人社 - UI 设计规范体系 (V29.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1677ff;
+            --primary-bg: #e6f4ff;
+            --primary-hover: #4096ff;
+            --error: #ff4d4f;
+            --error-bg: #fff2f0;
+            --success: #52c41a;
+            --warning: #faad14;
+            --text-main: #1f2937;
+            --text-sec: #6b7280;
+            --text-dis: #bfbfbf;
+            --border: #f0f0f0;
+            --header-h: 64px;
+            --sidebar-w: 240px;
+            --r-4: 4px;
+            --r-8: 8px;
+        }
+
+        body { font-family: "PingFang SC", system-ui; color: var(--text-main); background: #f8fafc; margin: 0; scroll-behavior: smooth; }
+
+        /* Layout Framework */
+        .g-header { height: var(--header-h); background: #fff; border-bottom: 1px solid var(--border); position: fixed; top: 0; left: 0; right: 0; z-index: 1000; display: flex; align-items: center; padding: 0 24px; justify-content: space-between; }
+        .g-sidebar { width: var(--sidebar-w); background: #fff; border-right: 1px solid var(--border); position: fixed; top: var(--header-h); bottom: 0; left: 0; z-index: 900; padding: 24px 12px; overflow-y: auto; }
+        .g-main { margin-top: var(--header-h); margin-left: var(--sidebar-w); padding: 40px; min-height: calc(100vh - var(--header-h)); }
+
+        /* Module Card */
+        .spec-card { background: #fff; border-radius: var(--r-8); border: 1px solid var(--border); padding: 32px; margin-bottom: 40px; }
+        .spec-title { font-size: 18px; font-weight: 800; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; color: #000; }
+        .spec-title::before { content: ''; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+
+        /* Table Enhanced */
+        .u-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .u-table th { background: #fafafa; padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); color: #000; font-weight: 600; position: relative; }
+        .u-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .u-table tr:hover td { background: var(--primary-bg); }
+        .sort-icon { font-size: 10px; color: #bfbfbf; margin-left: 4px; display: inline-flex; flex-direction: column; vertical-align: middle; }
+        .sort-icon .active { color: var(--primary); }
+
+        /* Tag System */
+        .u-tag { display: inline-flex; align-items: center; padding: 0 8px; height: 22px; font-size: 12px; border-radius: var(--r-4); border: 1px solid transparent; gap: 4px; }
+        .u-tag-blue { background: #e6f4ff; border-color: #91caff; color: #0958d9; }
+        .u-tag-green { background: #f6ffed; border-color: #b7eb8f; color: #389e0d; }
+        .u-tag-orange { background: #fff7e6; border-color: #ffd591; color: #d46b08; }
+        .u-tag-red { background: #fff2f0; border-color: #ffccc7; color: #cf1322; }
+
+        /* Timeline System */
+        .u-timeline-item { position: relative; padding-left: 28px; padding-bottom: 24px; }
+        .u-timeline-item::before { content: ''; position: absolute; left: 5px; top: 16px; bottom: 0; width: 1px; background: #f0f0f0; }
+        .u-timeline-item:last-child::before { display: none; }
+        .u-timeline-dot { position: absolute; left: 0; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--primary); background: #fff; z-index: 1; }
+        .u-timeline-dot.success { border-color: var(--success); }
+        .u-timeline-dot.error { border-color: var(--error); }
+        .u-timeline-dot.processing { border-color: var(--primary); background: var(--primary); }
+
+        /* Popover & Tooltip */
+        .pop-card { background: #fff; border-radius: var(--r-8); box-shadow: 0 9px 28px 8px rgba(0,0,0,0.05), 0 6px 16px 0 rgba(0,0,0,0.08); border: 1px solid #f0f0f0; }
+
+        /* Nav Link */
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: var(--r-8); color: var(--text-sec); font-size: 14px; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary); background: #f0f7ff; }
+        .nav-link.active { background: var(--primary-bg); color: var(--primary); font-weight: 600; }
+
+        /* Carousel Dot */
+        .dot-bar { height: 3px; width: 16px; border-radius: 2px; background: #ddd; cursor: pointer; transition: 0.3s; }
+        .dot-bar.active { background: var(--primary); width: 24px; }
+
+        .u-input { width: 100%; padding: 6px 12px; border: 1px solid #d1d5db; border-radius: var(--r-4); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+    <header class="g-header">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center text-white shadow-lg shadow-blue-200"><i class="fas fa-layer-group"></i></div>
+            <span class="font-black text-lg tracking-tight">智慧人社 UI Design</span>
+        </div>
+        <nav class="flex gap-8 text-sm font-medium">
+            <a href="#" class="text-gray-400 h-[64px] flex items-center hover:text-blue-600 transition-colors">组件总览</a>
+            <a href="#" class="text-blue-600 border-b-2 border-blue-600 h-[64px] flex items-center">数据展示模块 (Detailed)</a>
+        </nav>
+        <div class="flex items-center gap-4">
+            <i class="fas fa-search text-gray-400"></i>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 border-2 border-white shadow-sm"></div>
+        </div>
+    </header>
+
+    <aside class="g-sidebar">
+        <div class="space-y-1">
+            <div class="px-4 py-2 text-[10px] text-gray-400 font-bold uppercase tracking-widest">基础</div>
+            <a href="#" class="nav-link"><i class="fas fa-palette"></i> 色彩与文字</a>
+            <div class="px-4 py-2 mt-4 text-[10px] text-gray-400 font-bold uppercase tracking-widest">录入</div>
+            <a href="#" class="nav-link"><i class="fas fa-i-cursor"></i> 文本录入</a>
+            <div class="px-4 py-2 mt-4 text-[10px] text-gray-400 font-bold uppercase tracking-widest">数据展示</div>
+            <a href="#section-table" class="nav-link active"><i class="fas fa-table"></i> 高级表格与标签</a>
+            <a href="#section-card" class="nav-link"><i class="fas fa-th-large"></i> 复合卡片</a>
+            <a href="#section-feedback" class="nav-link"><i class="fas fa-bullseye"></i> 状态反馈 & 时间轴</a>
+            <a href="#section-overlay" class="nav-link"><i class="fas fa-clone"></i> 层级与浮动面板</a>
+        </div>
+    </aside>
+
+    <main class="g-main">
+        
+        <!-- 1. 高级表格与标签 -->
+        <section id="section-table" class="spec-card">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="spec-title !mb-0">高级表格与标签 (Table & Tags)</h2>
+                <div class="flex gap-2">
+                    <button class="px-3 py-1 text-xs border rounded hover:border-blue-500 transition-all">刷新数据</button>
+                    <button class="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-all">导出 Excel</button>
+                </div>
+            </div>
+            
+            <div class="space-y-8">
+                <div>
+                    <span class="status-tag">支持排序、筛选与多选的表格 / Advanced Table</span>
+                    <div class="border rounded-lg overflow-hidden bg-white">
+                        <table class="u-table">
+                            <thead>
+                                <tr>
+                                    <th class="w-12 text-center"><input type="checkbox" class="accent-blue-600"></th>
+                                    <th>
+                                        业务流水号
+                                        <span class="sort-icon">
+                                            <i class="fas fa-caret-up active"></i>
+                                            <i class="fas fa-caret-down"></i>
+                                        </span>
+                                    </th>
+                                    <th>申请人</th>
+                                    <th>
+                                        业务类型 
+                                        <i class="fas fa-filter text-[10px] text-gray-300 ml-1 hover:text-blue-500 cursor-pointer"></i>
+                                    </th>
+                                    <th>当前环节</th>
+                                    <th>状态</th>
+                                    <th class="text-right">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center"><input type="checkbox" class="accent-blue-600"></td>
+                                    <td class="font-mono text-gray-500">YS-2024-00129</td>
+                                    <td class="font-medium">赵铁柱</td>
+                                    <td>养老金核定</td>
+                                    <td>初审环节</td>
+                                    <td><span class="u-tag u-tag-blue"><i class="fas fa-clock text-[10px]"></i> 待处理</span></td>
+                                    <td class="text-right flex justify-end gap-3 text-blue-600 font-medium">
+                                        <span class="cursor-pointer hover:underline">审核</span>
+                                        <span class="cursor-pointer hover:underline text-gray-400">|</span>
+                                        <span class="cursor-pointer hover:underline">详情</span>
+                                    </td>
+                                </tr>
+                                <tr class="bg-blue-50/20">
+                                    <td class="text-center"><input type="checkbox" checked class="accent-blue-600"></td>
+                                    <td class="font-mono text-gray-500">YS-2024-00130</td>
+                                    <td class="font-medium">马冬梅</td>
+                                    <td>失业金申领</td>
+                                    <td>复核环节</td>
+                                    <td><span class="u-tag u-tag-green"><i class="fas fa-check-circle text-[10px]"></i> 已通过</span></td>
+                                    <td class="text-right flex justify-end gap-3 text-blue-600 font-medium">
+                                        <span class="cursor-pointer hover:underline">打印</span>
+                                        <span class="cursor-pointer hover:underline text-gray-400">|</span>
+                                        <span class="cursor-pointer hover:underline">详情</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-center"><input type="checkbox" class="accent-blue-600"></td>
+                                    <td class="font-mono text-gray-500">YS-2024-00131</td>
+                                    <td class="font-medium">王大锤</td>
+                                    <td>灵活就业参保</td>
+                                    <td>-</td>
+                                    <td><span class="u-tag u-tag-red"><i class="fas fa-times-circle text-[10px]"></i> 已驳回</span></td>
+                                    <td class="text-right flex justify-end gap-3 text-blue-600 font-medium">
+                                        <span class="cursor-pointer hover:underline">修改</span>
+                                        <span class="cursor-pointer hover:underline text-gray-400">|</span>
+                                        <span class="cursor-pointer hover:underline">详情</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- Table Footer / Pagination -->
+                        <div class="px-4 py-3 border-t flex justify-between items-center text-xs text-gray-500">
+                            <span>共 128 条记录</span>
+                            <div class="flex items-center gap-1">
+                                <button class="w-6 h-6 flex items-center justify-center border rounded disabled:opacity-50"><i class="fas fa-chevron-left"></i></button>
+                                <button class="w-6 h-6 flex items-center justify-center bg-blue-600 text-white rounded">1</button>
+                                <button class="w-6 h-6 flex items-center justify-center border rounded">2</button>
+                                <button class="w-6 h-6 flex items-center justify-center border rounded">3</button>
+                                <span class="px-1">...</span>
+                                <button class="w-6 h-6 flex items-center justify-center border rounded"><i class="fas fa-chevron-right"></i></button>
+                                <select class="ml-2 border rounded py-0.5 px-1 bg-white outline-none">
+                                    <option>10条/页</option>
+                                    <option>20条/页</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 标签与状态矩阵 -->
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <span class="status-tag">多场景标签 / Tag Matrix</span>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <span class="u-tag u-tag-blue">待受理</span>
+                            <span class="u-tag u-tag-green">审批通过</span>
+                            <span class="u-tag u-tag-orange">补正材料</span>
+                            <span class="u-tag u-tag-red">已撤回</span>
+                            <span class="u-tag bg-gray-100 border-gray-200 text-gray-500">已废止</span>
+                            <!-- 可点击/可关闭标签 -->
+                            <span class="u-tag border-blue-500 text-blue-600 bg-white">
+                                筛选：2024年度 <i class="fas fa-times-circle ml-1 cursor-pointer opacity-60 hover:opacity-100"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-tag">空数据状态 / Empty States</span>
+                        <div class="py-6 flex flex-col items-center justify-center border border-dashed rounded-lg bg-gray-50">
+                            <i class="fas fa-folder-open text-3xl text-gray-200 mb-2"></i>
+                            <p class="text-xs text-gray-400">暂无待办任务</p>
+                            <button class="mt-3 text-xs text-blue-600 font-bold">立即申请</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 复合卡片 -->
+        <section id="section-card" class="spec-card">
+            <h2 class="spec-title">复合卡片与容器 (Container & Cards)</h2>
+            <div class="grid grid-cols-3 gap-6">
+                <!-- 详情汇总卡片 -->
+                <div class="col-span-2 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4 text-white">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold opacity-80 text-xs">企业基本情况概览</h3>
+                                <p class="text-lg font-black mt-1">浙江省智慧科技发展有限公司</p>
+                            </div>
+                            <span class="bg-white/20 px-2 py-1 rounded text-[10px] backdrop-blur-sm">单位代码: 33010199</span>
+                        </div>
+                    </div>
+                    <div class="p-6 grid grid-cols-3 gap-6 bg-white">
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">参保总人数</p>
+                            <p class="text-xl font-black text-gray-800">1,204 <span class="text-xs font-normal text-gray-400 ml-1">人</span></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">正常缴费中</p>
+                            <p class="text-xl font-black text-green-600">1,198 <span class="text-xs font-normal text-gray-400 ml-1">人</span></p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-gray-400 uppercase font-bold">本月欠费额</p>
+                            <p class="text-xl font-black text-red-500">¥ 0.00</p>
+                        </div>
+                    </div>
+                    <div class="px-6 py-3 bg-gray-50 border-t flex justify-between items-center">
+                        <span class="text-[10px] text-gray-500 italic">上次同步时间：2024-05-18 14:00</span>
+                        <button class="text-xs text-blue-600 font-bold flex items-center gap-1">查看详细档案 <i class="fas fa-arrow-right text-[10px]"></i></button>
+                    </div>
+                </div>
+
+                <!-- 快捷操作卡片 -->
+                <div class="border rounded-xl p-6 bg-white flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-sm font-bold border-b pb-3 mb-4">常用工具</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center group cursor-pointer">
+                                <div class="w-10 h-10 mx-auto bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all mb-2">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <span class="text-xs text-gray-600">申报汇总</span>
+                            </div>
+                            <div class="text-center group cursor-pointer">
+                                <div class="w-10 h-10 mx-auto bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center group-hover:bg-orange-600 group-hover:text-white transition-all mb-2">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <span class="text-xs text-gray-600">证照管理</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-xs font-bold text-gray-600 transition-colors">自定义工具栏</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 时间轴与反馈 -->
+        <section id="section-feedback" class="spec-card">
+            <h2 class="spec-title">状态反馈与时间轴 (Feedback)</h2>
+            <div class="grid grid-cols-3 gap-10">
+                <!-- 复杂时间轴 -->
+                <div class="col-span-1">
+                    <span class="status-tag">任务进度轴 / Task Timeline</span>
+                    <div class="mt-6">
+                        <div class="u-timeline-item">
+                            <div class="u-timeline-dot success flex items-center justify-center text-[6px] text-green-600"><i class="fas fa-check"></i></div>
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">资料上传成功</p>
+                                <p class="text-[10px] text-gray-500 mt-1">已完成个人身份核验及证明材料提交</p>
+                                <p class="text-[9px] text-gray-400 mt-1">2024-05-20 10:00</p>
+                            </div>
+                        </div>
+                        <div class="u-timeline-item">
+                            <div class="u-timeline-dot processing animate-pulse"></div>
+                            <div>
+                                <p class="text-xs font-bold text-blue-600">后台审核中</p>
+                                <div class="mt-2 p-2 bg-blue-50 rounded text-[10px] text-blue-700 leading-relaxed">
+                                    <i class="fas fa-info-circle mr-1"></i> 预计还需要 1-2 个工作日，请耐心等待。
+                                </div>
+                            </div>
+                        </div>
+                        <div class="u-timeline-item">
+                            <div class="u-timeline-dot !border-gray-200"></div>
+                            <div>
+                                <p class="text-xs text-gray-400">结果公示</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 通知与走马灯 -->
+                <div class="col-span-2">
+                    <span class="status-tag">消息通告栏 / Banner & Carousel</span>
+                    <div class="mt-4 bg-gray-900 rounded-xl overflow-hidden h-40 relative group">
+                        <!-- Carousel Image/Content Mockup -->
+                        <div class="absolute inset-0 bg-cover bg-center opacity-40" style="background-image: url('https://images.unsplash.com/photo-1454165833767-0266b1957d6f?auto=format&fit=crop&w=600&q=80')"></div>
+                        <div class="absolute inset-0 p-8 flex flex-col justify-center">
+                            <span class="text-[10px] text-blue-400 font-bold mb-2"># 政策解读</span>
+                            <h4 class="text-white text-lg font-black leading-tight">2024年灵活就业人员<br>社会保险缴费基数最新指导</h4>
+                            <p class="text-gray-300 text-xs mt-2">点击查看全省统一标准详情...</p>
+                        </div>
+                        <!-- Navigation -->
+                        <div class="absolute bottom-4 left-8 flex gap-2">
+                            <div class="dot-bar active"></div>
+                            <div class="dot-bar"></div>
+                            <div class="dot-bar"></div>
+                        </div>
+                        <div class="absolute right-4 bottom-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button class="w-8 h-8 rounded-full bg-white/10 text-white text-xs hover:bg-white/20"><i class="fas fa-chevron-left"></i></button>
+                            <button class="w-8 h-8 rounded-full bg-white/10 text-white text-xs hover:bg-white/20"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 flex gap-4">
+                        <div class="flex-1 bg-green-50 border border-green-100 p-3 rounded-lg flex gap-3">
+                            <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                            <div>
+                                <p class="text-xs font-bold text-green-800">成功完成</p>
+                                <p class="text-[10px] text-green-600">您的年度汇算清缴申请已提交系统。</p>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-amber-50 border border-amber-100 p-3 rounded-lg flex gap-3">
+                            <i class="fas fa-exclamation-triangle text-amber-500 mt-0.5"></i>
+                            <div>
+                                <p class="text-xs font-bold text-amber-800">重要提醒</p>
+                                <p class="text-[10px] text-amber-600">部分档案信息即将于 3 日后过期。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 层级与浮动面板 -->
+        <section id="section-overlay" class="spec-card">
+            <h2 class="spec-title">层级与浮动面板 (Overlay & Popover)</h2>
+            <div class="grid grid-cols-2 gap-10">
+                <!-- Popover Details -->
+                <div>
+                    <span class="status-tag">浮窗信息详情 / Popover Details</span>
+                    <div class="mt-4 p-8 bg-gray-50 rounded-xl flex items-center justify-center">
+                        <div class="pop-card w-64 p-5 relative">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 rounded bg-blue-500 flex items-center justify-center text-white"><i class="fas fa-user-tie"></i></div>
+                                <div>
+                                    <p class="text-sm font-black">系统经办人</p>
+                                    <p class="text-[10px] text-gray-400">工号: ADMIN_0192</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3 border-t pt-3">
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-400">所属部门</span>
+                                    <span>省厅养老服务处</span>
+                                </div>
+                                <div class="flex justify-between text-xs">
+                                    <span class="text-gray-400">联系电话</span>
+                                    <span>0571-88**1234</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <button class="flex-1 py-1.5 bg-blue-600 text-white text-[10px] rounded font-bold">发起即时通讯</button>
+                            </div>
+                            <!-- Arrow -->
+                            <div class="absolute -top-1.5 left-8 w-3 h-3 bg-white border-t border-l rotate-45"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drawer Content -->
+                <div>
+                    <span class="status-tag">侧边抽屉规范 / Drawer Content</span>
+                    <div class="mt-4 border rounded-xl h-64 overflow-hidden relative shadow-inner bg-gray-100">
+                        <div class="absolute inset-y-0 right-0 w-48 bg-white shadow-2xl flex flex-col">
+                            <div class="p-4 border-b flex justify-between items-center">
+                                <span class="text-xs font-black">筛选条件</span>
+                                <i class="fas fa-times text-gray-300 text-[10px]"></i>
+                            </div>
+                            <div class="p-4 flex-1 space-y-4">
+                                <div>
+                                    <label class="text-[10px] font-bold text-gray-400">业务状态</label>
+                                    <div class="grid grid-cols-2 gap-2 mt-1">
+                                        <button class="py-1 border rounded text-[10px] bg-blue-50 border-blue-200 text-blue-600 font-bold">全部</button>
+                                        <button class="py-1 border rounded text-[10px]">审核中</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold text-gray-400">经办日期</label>
+                                    <input type="text" class="u-input mt-1" placeholder="YYYY-MM-DD">
+                                </div>
+                            </div>
+                            <div class="p-4 border-t flex gap-2">
+                                <button class="flex-1 py-1.5 border rounded text-[10px]">重置</button>
+                                <button class="flex-1 py-1.5 bg-blue-600 text-white text-[10px] rounded">应用</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="h-20"></div>
+    </main>
+
+</body>
+</html>
