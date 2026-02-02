@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧人社 - 提示与反馈规范 (V33.0)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1677ff;
+            --success: #52c41a;
+            --warning: #faad14;
+            --error: #ff4d4f;
+            --info: #1677ff;
+            --border: #f1f5f9;
+            --r-2xl: 24px;
+            --r-xl: 16px;
+            --bg-main: #f8fafc;
+        }
+
+        body { font-family: "PingFang SC", "Microsoft YaHei", system-ui; background: var(--bg-main); color: #1e293b; margin: 0; }
+
+        /* 统一图标容器背景色逻辑 */
+        .icon-box {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; font-size: 20px;
+        }
+
+        /* 1. 全局提示 Message */
+        .u-message-container {
+            position: fixed; top: 32px; left: 50%; transform: translateX(-50%);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 16px;
+        }
+        .u-message {
+            display: flex; align-items: center; padding: 0 32px; height: 56px;
+            background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(20px);
+            border-radius: var(--r-xl);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+            gap: 16px; font-size: 16px; font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            animation: messageSlideIn 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        @keyframes messageSlideIn {
+            from { transform: translateY(-40px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* 2. 警告提示 Alert */
+        .u-alert {
+            display: flex; align-items: flex-start; padding: 24px 32px;
+            border-radius: var(--r-xl); border: 1px solid transparent;
+            position: relative; overflow: hidden; transition: all 0.3s;
+        }
+        .u-alert:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.03); }
+        .u-alert-info { background: #eff6ff; border-color: #dbeafe; color: #1e40af; }
+        .u-alert-warning { background: #fffbeb; border-color: #fef3c7; color: #92400e; }
+        .u-alert-error { background: #fef2f2; border-color: #fee2e2; color: #991b1b; }
+
+        /* 3. 结果页 Result */
+        .u-result { padding: 120px 60px; text-align: center; background: #fff; border-radius: var(--r-2xl); border: 1px solid #f1f5f9; }
+        .u-success-circle {
+            width: 112px; height: 112px; background: #22c55e; color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 56px; margin: 0 auto 40px;
+            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
+            animation: bounceIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* 4. 侧边栏导航 */
+        .nav-link {
+            display: flex; align-items: center; gap: 16px; padding: 18px 24px;
+            border-radius: 14px; color: #64748b; font-size: 16px; font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover { background: #f1f5f9; color: var(--primary); }
+        .nav-link.active { background: #1677ff; color: #fff; box-shadow: 0 10px 20px -5px rgba(22, 119, 255, 0.4); }
+
+        /* 通用卡片样式 */
+        .spec-card { background: #fff; border-radius: var(--r-2xl); padding: 64px; margin-bottom: 56px; border: 1px solid #f1f5f9; }
+        .spec-title { font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 12px; letter-spacing: -0.04em; }
+        .spec-desc { font-size: 17px; color: #64748b; margin-bottom: 56px; max-width: 800px; line-height: 1.7; }
+    </style>
+</head>
+<body>
+
+    <!-- 全局悬浮提示 -->
+    <div class="u-message-container">
+        <div class="u-message">
+            <i class="fas fa-check-circle text-green-500 text-2xl"></i>
+            <span>所有业务数据已同步至省级指挥中心</span>
+        </div>
+    </div>
+
+    <!-- 顶部通栏 -->
+    <header class="h-24 bg-white/80 backdrop-blur-md border-b flex items-center justify-between px-16 sticky top-0 z-50">
+        <div class="flex items-center gap-6">
+            <div class="w-14 h-14 bg-gradient-to-tr from-blue-700 to-blue-500 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-blue-200">
+                <i class="fas fa-fingerprint text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tight">智慧人社设计系统</h1>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-1">Global Feedback Guidelines v33.0</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-8">
+            <div class="flex flex-col items-end">
+                <span class="text-sm font-bold text-slate-700">省级管理员</span>
+                <span class="text-[10px] text-green-500 font-black uppercase">Authentication Verified</span>
+            </div>
+            <div class="w-12 h-12 bg-slate-100 rounded-full border-2 border-white shadow-sm flex items-center justify-center">
+                <i class="fas fa-user-tie text-slate-400"></i>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- 侧边导航 -->
+        <aside class="w-80 h-[calc(100vh-96px)] bg-white border-r p-8 fixed left-0 overflow-y-auto">
+            <nav class="space-y-3">
+                <p class="px-4 py-4 text-[11px] text-slate-400 font-black uppercase tracking-[0.2em]">反馈模块</p>
+                <a href="#message" class="nav-link active"><i class="fas fa-lightbulb-on"></i> 全局与警告提示</a>
+                <a href="#result" class="nav-link"><i class="fas fa-award"></i> 结果状态响应</a>
+                <a href="#notify" class="nav-item nav-link"><i class="fas fa-inbox-in"></i> 消息通知中心</a>
+                <a href="#progress" class="nav-item nav-link"><i class="fas fa-tachometer-fastest"></i> 进度与加载</a>
+                <a href="#empty" class="nav-item nav-link"><i class="fas fa-window-restore"></i> 场景缺省页</a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-80 p-20 w-full">
+            
+            <!-- 1. 全局提示与警告 -->
+            <section id="message" class="spec-card">
+                <h2 class="spec-title">全局提示与警告 / Message & Alert</h2>
+                <p class="spec-desc">反馈应当是即时且具有明确语义的。我们通过 56px 的高度确保在复杂的业务背景下，反馈依然具有极高的可视度。</p>
+                
+                <div class="grid grid-cols-2 gap-20">
+                    <div class="space-y-8">
+                        <p class="text-xs font-black text-slate-400 uppercase border-b pb-4 tracking-widest">全局反馈 (Message)</p>
+                        <div class="u-message !static !w-full !justify-start shadow-none border-slate-100">
+                            <i class="fas fa-info-circle text-blue-500 text-2xl"></i>
+                            <span>当前系统正在执行月度数据封存，请勿断电</span>
+                        </div>
+                        <div class="u-message !static !w-full !justify-start shadow-none bg-emerald-50/50 border-emerald-100">
+                            <i class="fas fa-check-double text-emerald-500 text-2xl"></i>
+                            <span>5 份申报文件已通过初步逻辑校验</span>
+                        </div>
+                        <div class="u-message !static !w-full !justify-start shadow-none bg-rose-50/50 border-rose-100">
+                            <i class="fas fa-engine-warning text-rose-500 text-2xl"></i>
+                            <span>CA 证书即将过期，请及时在设置中心更新</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <p class="text-xs font-black text-slate-400 uppercase border-b pb-4 tracking-widest">通知提示 (Alert)</p>
+                        <div class="u-alert u-alert-info">
+                            <div class="icon-box bg-blue-500 text-white mr-6 shadow-lg shadow-blue-200"><i class="fas fa-bullhorn"></i></div>
+                            <div class="flex-1">
+                                <h4 class="font-black text-lg">系统维护提醒</h4>
+                                <p class="mt-1 opacity-80">由于全省数据库架构迁移，本周六（2024-06-15）全天将暂停社保在线缴费功能。</p>
+                            </div>
+                        </div>
+                        <div class="u-alert u-alert-warning">
+                            <div class="icon-box bg-amber-500 text-white mr-6 shadow-lg shadow-amber-200"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="flex-1">
+                                <h4 class="font-black text-lg">待处理安全风险</h4>
+                                <p class="mt-1 opacity-80">检测到您的管理员账号在异常时段登录，系统已开启二次身份验证模式。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 结果状态响应 -->
+            <section id="result" class="spec-card">
+                <h2 class="spec-title">结果状态响应 / Result Response</h2>
+                <p class="spec-desc">关键路径的终点。通过极具张力的成功图标，赋予用户操作后的获得感与安全感。</p>
+                
+                <div class="u-result shadow-2xl shadow-slate-200/50">
+                    <div class="u-success-circle">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h3 class="text-4xl font-black text-slate-900">养老金发放方案核定成功</h3>
+                    <p class="text-slate-500 mt-8 max-w-2xl mx-auto text-xl leading-relaxed">
+                        本次核定涉及全市 12,402 位退休人员，总金额 ￥4,290.50 万元。<br>
+                        资金拨付指令已下达到签约银行，请在 24 小时后确认流水状态。
+                    </p>
+                    <div class="mt-16 flex justify-center gap-8">
+                        <button class="px-14 py-5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black text-lg transition-all shadow-2xl shadow-blue-200">打印核定单</button>
+                        <button class="px-14 py-5 bg-white border-2 border-slate-200 hover:border-slate-300 text-slate-600 rounded-2xl font-black text-lg">关闭页面</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 集中通知中心 (多组模拟数据) -->
+            <section id="notify" class="spec-card">
+                <h2 class="spec-title">集中通知中心 / Notification Center</h2>
+                <p class="spec-desc">整合了待办、预警、系统消息。通过图标的一致性色彩逻辑（Blue-信息，Red-紧急，Green-成功）进行分类。</p>
+                
+                <div class="max-w-4xl mx-auto bg-white rounded-[32px] shadow-2xl shadow-slate-900/5 border border-slate-50 overflow-hidden">
+                    <div class="px-12 py-10 border-b bg-slate-50/50 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900">最近通知</h3>
+                            <p class="text-sm text-slate-400 font-bold mt-1">您有 3 条未读消息需要处理</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <button class="px-6 py-2 bg-white border rounded-xl text-xs font-black text-slate-600 hover:bg-slate-50 shadow-sm transition-all">全部已读</button>
+                            <button class="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-100">通知配置</button>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        <!-- 数据 1 -->
+                        <div class="p-12 flex gap-10 hover:bg-blue-50/20 transition-all cursor-pointer group">
+                            <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center text-white text-3xl shadow-xl shadow-blue-200 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-file-chart-line"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-xl font-black text-slate-800">2024年Q2 季度报表已生成</h4>
+                                    <span class="text-xs font-bold text-slate-400 uppercase">12:30 PM</span>
+                                </div>
+                                <p class="text-lg text-slate-500 mt-3 leading-relaxed">全省城镇职工养老保险收支明细表已计算完成，点击即可查看深度数据可视化看板。</p>
+                                <div class="mt-6 flex gap-3">
+                                    <span class="px-4 py-1.5 bg-blue-100 text-blue-600 text-[11px] rounded-full font-black">统计类</span>
+                                    <span class="px-4 py-1.5 bg-slate-100 text-slate-500 text-[11px] rounded-full font-black">已导出</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 数据 2 -->
+                        <div class="p-12 flex gap-10 hover:bg-rose-50/20 transition-all cursor-pointer group">
+                            <div class="w-20 h-20 bg-rose-600 rounded-3xl flex items-center justify-center text-white text-3xl shadow-xl shadow-rose-200 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-user-lock"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-xl font-black text-slate-800">异地登录安全预警</h4>
+                                    <span class="text-xs font-bold text-slate-400 uppercase">09:15 AM</span>
+                                </div>
+                                <p class="text-lg text-slate-500 mt-3 leading-relaxed">检测到在 [广东省广州市] 有登录尝试。如果您近期未前往该地，请立即冻结账号权限。</p>
+                                <div class="mt-6 flex gap-3">
+                                    <span class="px-4 py-1.5 bg-rose-100 text-rose-600 text-[11px] rounded-full font-black">紧急</span>
+                                    <span class="px-4 py-1.5 bg-slate-100 text-slate-500 text-[11px] rounded-full font-black">待确认</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 数据 3 -->
+                        <div class="p-12 flex gap-10 hover:bg-emerald-50/20 transition-all cursor-pointer group">
+                            <div class="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center text-white text-3xl shadow-xl shadow-emerald-200 group-hover:scale-110 transition-transform">
+                                <i class="fas fa-cloud-upload"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <h4 class="text-xl font-black text-slate-800">批量参保数据同步完成</h4>
+                                    <span class="text-xs font-bold text-slate-400 uppercase">昨天</span>
+                                </div>
+                                <p class="text-lg text-slate-500 mt-3 leading-relaxed">共计 4,500 条企业员工参保信息已成功同步至部级平台，成功率 100%。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. 进度条与加载 -->
+            <section id="progress" class="spec-card">
+                <h2 class="spec-title">进度与加载视觉 / Progress</h2>
+                <p class="spec-desc">针对大数据量处理场景，我们提供了带百分比、状态指示以及动态渐变的高规格进度条。</p>
+                
+                <div class="grid grid-cols-2 gap-24 py-10">
+                    <div class="space-y-16">
+                        <div class="group">
+                            <div class="flex justify-between items-end mb-5">
+                                <div>
+                                    <h5 class="text-lg font-black text-slate-800">正在生成月度分析报告</h5>
+                                    <p class="text-sm text-slate-400 mt-1 italic">正在处理：全省人社数据建模...</p>
+                                </div>
+                                <span class="text-3xl font-black text-blue-600 font-mono italic">78.5%</span>
+                            </div>
+                            <div class="h-4 bg-slate-100 rounded-full overflow-hidden border border-slate-50">
+                                <div class="h-full bg-gradient-to-r from-blue-700 via-blue-500 to-indigo-400 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-1000" style="width: 78.5%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-10 p-10 bg-slate-50 rounded-[24px] border border-dashed border-slate-200">
+                            <div class="w-16 h-16 border-[6px] border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+                            <div>
+                                <p class="text-xl font-black text-slate-800">多维联机解析中 (OLAP)</p>
+                                <p class="text-sm text-slate-400 mt-1">这可能需要几分钟，请不要关闭浏览器</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 rounded-[32px] p-16 text-white relative overflow-hidden flex flex-col items-center justify-center">
+                        <div class="absolute inset-0 opacity-10">
+                            <div class="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-500 via-transparent to-transparent"></div>
+                        </div>
+                        <div class="relative w-32 h-32 mb-10">
+                            <div class="absolute inset-0 border-[10px] border-white/5 rounded-full"></div>
+                            <div class="absolute inset-0 border-[10px] border-transparent border-t-white rounded-full animate-spin"></div>
+                        </div>
+                        <h4 class="text-2xl font-black mb-4">区块链证书上链中</h4>
+                        <p class="text-slate-400 text-center max-w-xs leading-relaxed">正在向全省分布式节点广播交易，确保记录不可篡改...</p>
+                        <div class="mt-8 flex gap-3">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                            <div class="w-3 h-3 bg-blue-400 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+                            <div class="w-3 h-3 bg-blue-300 rounded-full animate-pulse [animation-delay:0.4s]"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. 缺省页场景 (多组数据) -->
+            <section id="empty" class="spec-card">
+                <h2 class="spec-title">缺省页矩阵 / Empty Scenarios</h2>
+                <p class="spec-desc">不仅仅是“无数据”，我们针对不同维度的异常提供了具体的解决方案引导。</p>
+                
+                <div class="grid grid-cols-3 gap-12">
+                    <div class="p-16 border-2 border-slate-50 rounded-[32px] text-center hover:border-blue-100 transition-all group">
+                        <div class="w-28 h-28 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-10 text-slate-300 group-hover:text-blue-200 transition-colors">
+                            <i class="fas fa-search-location text-5xl"></i>
+                        </div>
+                        <h5 class="text-xl font-black text-slate-800">搜不到相关参保记录</h5>
+                        <p class="text-sm text-slate-400 mt-4 leading-relaxed px-4">该身份证号未在当前行政区域登记，请确认行政区划选择是否正确。</p>
+                        <button class="mt-8 text-blue-600 font-black text-sm hover:underline">去异地库检索 <i class="fas fa-arrow-right ml-1"></i></button>
+                    </div>
+
+                    <div class="p-16 border-2 border-slate-50 rounded-[32px] bg-slate-50/20 text-center relative overflow-hidden group">
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-blue-600/5 rounded-full"></div>
+                        <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-xl shadow-slate-200 text-slate-200 group-hover:text-emerald-300 transition-colors">
+                            <i class="fas fa-glass-cheers text-5xl"></i>
+                        </div>
+                        <h5 class="text-xl font-black text-slate-800">任务已全部处理</h5>
+                        <p class="text-sm text-slate-400 mt-4 leading-relaxed px-4">当前办件库内无待审批的事项。您的工作效率非常惊人！</p>
+                    </div>
+
+                    <div class="p-16 border-2 border-rose-50 rounded-[32px] bg-rose-50/10 text-center relative">
+                        <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center mx-auto mb-10 shadow-xl shadow-rose-100 text-rose-100 relative group">
+                            <i class="fas fa-server text-5xl group-hover:rotate-12 transition-transform"></i>
+                            <div class="absolute -bottom-2 -right-2 bg-rose-600 text-white w-10 h-10 rounded-full flex items-center justify-center border-4 border-white">
+                                <i class="fas fa-exclamation"></i>
+                            </div>
+                        </div>
+                        <h5 class="text-xl font-black text-slate-800">无法访问核心数据库</h5>
+                        <p class="text-sm text-slate-400 mt-4 leading-relaxed px-4">由于省级网关防火墙升级，当前 IP（10.22.xx.xx）暂时失去连接权限。</p>
+                        <button class="mt-8 px-10 py-3 bg-rose-600 text-white rounded-xl text-sm font-black shadow-lg shadow-rose-200 hover:scale-105 transition-all">申请临时访问权限</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+</body>
+</html>
