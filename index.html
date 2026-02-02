@@ -25,9 +25,10 @@
             line-height: 1.6;
             background: #fff;
         }
+        /* 优化选中样式：强化视觉效果 */
         .sidebar-active {
-            background-color: #e6f4ff;
-            color: var(--primary);
+            background-color: #e6f4ff !important;
+            color: var(--primary) !important;
             border-right: 3px solid var(--primary);
             font-weight: 600;
         }
@@ -218,22 +219,70 @@
         const navItems = document.querySelectorAll('.nav-item');
         const sections = document.querySelectorAll('section');
 
+        // 新增：页面加载时默认选中第一个导航项
+        window.addEventListener('DOMContentLoaded', () => {
+            // 初始选中第一个锚点导航（#scope）
+            const firstNavItem = document.querySelector('.nav-item[href="#scope"]');
+            if (firstNavItem) {
+                firstNavItem.classList.add('sidebar-active');
+            }
+
+            // 处理URL锚点（如果页面打开时带#xxx，选中对应导航）
+            const hash = window.location.hash;
+            if (hash) {
+                const targetNav = document.querySelector(`.nav-item[href="${hash}"]`);
+                if (targetNav) {
+                    navItems.forEach(item => item.classList.remove('sidebar-active'));
+                    targetNav.classList.add('sidebar-active');
+                }
+            }
+        });
+
+        // 优化滚动监听逻辑
         window.addEventListener('scroll', () => {
             let current = '';
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                if (window.scrollY >= (sectionTop - 200)) {
+                const sectionHeight = section.offsetHeight;
+                // 滚动到section的1/3位置时就触发选中，体验更优
+                if (window.scrollY >= (sectionTop - 200) && window.scrollY < (sectionTop + sectionHeight - 200)) {
                     current = section.getAttribute('id');
                 }
             });
 
             navItems.forEach(item => {
                 item.classList.remove('sidebar-active');
+                // 匹配锚点导航
                 if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('sidebar-active');
+                }
+                // 额外：如果是外部页面，可根据当前URL匹配（示例）
+                // 比如当前页面是coreVision.html，选中对应导航
+                const href = item.getAttribute('href');
+                if (href.includes('.html') && window.location.pathname.includes(href)) {
                     item.classList.add('sidebar-active');
                 }
             });
         }, { passive: true });
+
+        // 新增：点击导航项时主动添加选中样式（避免滚动延迟）
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                // 排除外部链接（避免阻止跳转）
+                if (item.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = item.getAttribute('href').slice(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        // 平滑滚动到目标区域
+                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+                // 点击时立即选中当前导航
+                navItems.forEach(nav => nav.classList.remove('sidebar-active'));
+                item.classList.add('sidebar-active');
+            });
+        });
     </script>
 </body>
 </html>
